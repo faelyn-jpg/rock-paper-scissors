@@ -34,16 +34,20 @@ function getHumanChoice() {
         if (humanChoice === "rock" ||
             humanChoice === "paper" ||
             humanChoice === "scissors") {
-                return humanChoice
+                return humanChoice 
             }
         }
     }
 }
     //return choice
 //create variables to hold score
+
+//playGame function starts here
+function playGame() {
 let humanScore = 0
 let computerScore = 0
 
+//capitalizes text for console.log printing
 function capitalize(text)  {
     let start = text.substr(0,1)
     let end = text.substr(1)
@@ -51,7 +55,7 @@ function capitalize(text)  {
     end = end.toLowerCase();
     return start.concat(end);
 }
-
+//playRound function here
 function playRound(humanChoice, computerChoice) {
 //compare humanChoice and computerChoice
 //if human and computer have equal values, tie, dont add to score
@@ -79,8 +83,20 @@ if (humanChoice === computerChoice) {
 //log who wins in correct score
 }
 
-const humanSelection = getHumanChoice()
-const computerSelection = getComputerChoice()
+// const humanSelection = getHumanChoice()
+// const computerSelection = getComputerChoice()
 
-playRound(humanSelection, computerSelection)
+playRound(getHumanChoice(), getComputerChoice())
 console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
+playRound(getHumanChoice(), getComputerChoice())
+console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
+playRound(getHumanChoice(), getComputerChoice())
+console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
+playRound(getHumanChoice(), getComputerChoice())
+console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
+playRound(getHumanChoice(), getComputerChoice())
+console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
+}
+//end playGame function here
+
+console.log(playGame())
