@@ -1,102 +1,120 @@
+const choices = ["Rock", "Paper", "Scissors"]
+const contain = document.querySelector("#container")
+const textBlock = document.querySelector("#text")
+const btnStart = document.querySelector("#start")
+const buttonContain = document.querySelector(".button-container")
+
+
+btnStart.addEventListener("click", () => {
+    playGame()
+})
+
+function addButtons() {
+    btnStart.remove()
+    for (let i = 0; i < choices.length; i++) {
+        const addBtn = document.createElement("button")
+        addBtn.id = choices[i]
+        addBtn.className = "rpsButtons"
+        addBtn.textContent = choices[i]
+        buttonContain.appendChild(addBtn)
+    }
+    textBlock.textContent = "Rock, Paper, Scissors?"
+}
+
+function removeButtons() {
+    for (let i = 0; i < choices.length; i++) {
+        const rpsButt = document.querySelector(".rpsButtons")
+        rpsButt.remove()
+    }
+}
+
+function disableButtons() {
+    const rpsButtons = document.querySelectorAll(".rpsButtons")
+    rpsButtons.forEach(btn => {
+        btn.setAttribute("disabled", "")
+    })
+}
+
 function getComputerChoice() {
-    //random math * 10 to get number between 1 and 9 by rounding down
-    let randomMath = Math.floor(Math.random() * 3) + 1
-    let computerChoice = 0
-    //1 = rock, 2 = paper, 3 = scissors
-    if (randomMath === 1) {
-        computerChoice = "rock"
-        return computerChoice
-    } else if (randomMath === 2) {
-        computerChoice = "paper"
-        return computerChoice
-    } else {
-        computerChoice = "scissors"
-        return computerChoice
-    }
-    //return string value
+    let randomMath = Math.floor(Math.random() * 3)
+    let computerChoice = choices[randomMath]
+    return computerChoice
 }
 
-function getHumanChoice() {
-    //prompt player to choose
-    let humanChoice = prompt("Rock, paper, scissors?")
-    humanChoice = humanChoice.toLowerCase();
-    //check that its a valid choice
-    if (humanChoice == "rock" || 
-    humanChoice == "paper" || 
-    humanChoice == "scissors") {
-        return humanChoice 
-    } else {
-        while (humanChoice != "rock" ||
-             humanChoice != "paper" || 
-             humanChoice != "scissors") {
-            humanChoice = prompt("Please pick a valid choice. Rock, paper, scissors?")
-            humanChoice = humanChoice.toLowerCase();
-        if (humanChoice === "rock" ||
-            humanChoice === "paper" ||
-            humanChoice === "scissors") {
-                return humanChoice 
-            }
-        }
-    }
-}
-    //return choice
-//create variables to hold score
-
-//playGame function starts here
 function playGame() {
-let humanScore = 0
-let computerScore = 0
-
-//capitalizes text for console.log printing
-function capitalize(text)  {
-    let start = text.substr(0,1)
-    let end = text.substr(1)
-    start = start.toUpperCase();
-    end = end.toLowerCase();
-    return start.concat(end);
+    addButtons()
+    const scoreDiv = document.createElement("div")
+    scoreDiv.id = "runningScore"
+    contain.appendChild(scoreDiv)
+    let playerScore = 0
+    let computerChoice
+    let computerScore = 0
+    let playerChoice = ""
+    const allButtons = document.querySelectorAll(".rpsButtons")
+    allButtons.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            playerChoice = e.target.textContent;
+            const result = playRound(playerChoice, computerChoice)
+            if (result === "Player Win") ++playerScore
+            else if (result === "Computer Win") ++computerScore
+            const runningScore = document.querySelector("#runningScore")
+            runningScore.textContent = `Player Score: ${playerScore}, Computer Score: ${computerScore}`
+            contain.appendChild(runningScore)
+            console.log(playerScore, computerScore)
+            if (playerScore + computerScore == 5) {
+                disableButtons()
+                const outcome = document.createElement("div")
+                if (playerScore > computerScore) {
+                    outcome.textContent = "WIN!"
+                    contain.appendChild(outcome)
+                }
+                else {
+                    outcome.textContent = "LOSS!"
+                    contain.appendChild(outcome)
+                }
+                const resetButton = document.createElement("button")
+                resetButton.textContent = "Play Again?"
+                contain.appendChild(resetButton)
+                resetButton.addEventListener("click", () => {
+                    outcome.remove()
+                    computerScore = 0
+                    playerScore = 0
+                    textBlock.textContent = ""
+                    runningScore.remove()
+                    removeButtons()
+                    contain.appendChild(btnStart)
+                    resetButton.remove()
+                })
+            }
+        })
+    })
 }
-//playRound function here
-function playRound(humanChoice, computerChoice) {
-//compare humanChoice and computerChoice
-//if human and computer have equal values, tie, dont add to score
-if (humanChoice === computerChoice) {
-    console.log("It's a tie!")
-} else if (humanChoice === "paper" && computerChoice === "rock") {
-    //if human paper and computer rock, human win
-    console.log("You win! Paper beats Rock!")
-    humanScore += 1
-} else if (humanChoice === "rock" && computerChoice === "scissors") {
-    //if human rock and computer scissors, human win
-    console.log("You win! Rock beats Scissors!")
-    humanScore += 1
-} else if (humanChoice === "scissors" && computerChoice === "paper") {
-    //if human scissors and computer paper, human win
-    console.log("You win! Scissors beats Paper!")
-    humanScore += 1
- } else {
-    //otherwise, human lose
-    humanChoice = capitalize(humanChoice)
-    computerChoice = capitalize(computerChoice)
-    console.log(`You lose! ${computerChoice} beats ${humanChoice}!`)
-    computerScore += 1
- }
-//log who wins in correct score
+
+
+function playRound(playerChoice, computerChoice) {
+    computerChoice = getComputerChoice()
+    console.log(computerChoice, playerChoice)
+
+    if (playerChoice == computerChoice) {
+        textBlock.textContent = "It's a tie!"
+        return "Tie"
+    }
+    else if (((playerChoice === choices[0]) && (computerChoice === choices[2])) ||
+        ((playerChoice === choices[1]) && (computerChoice === choices[0])) ||
+        ((playerChoice === choices[2]) && (computerChoice === choices[1]))) {
+        textBlock.textContent = `You win! ${playerChoice} beats ${computerChoice}!`
+        return "Player Win"
+    } else {
+        textBlock.textContent = `You lose! ${computerChoice} beats ${playerChoice}!`
+        return "Computer Win"
+    }
 }
 
-// const humanSelection = getHumanChoice()
-// const computerSelection = getComputerChoice()
 
-playRound(getHumanChoice(), getComputerChoice())
-console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
-playRound(getHumanChoice(), getComputerChoice())
-console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
-playRound(getHumanChoice(), getComputerChoice())
-console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
-playRound(getHumanChoice(), getComputerChoice())
-console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
-playRound(getHumanChoice(), getComputerChoice())
-console.log(`Player: ${humanScore}, Computer: ${computerScore}.`)
-}
-//end playGame function here
-
-console.log(playGame())
+//1. on game start everything should be fresh
+//2. set up button functionality
+//3. when user clicks on something, a round should be "played"
+//the pc score generated and the scores updated
+//4.if player wins, disable buttons and show win to player
+//5.if pc wins, disable buttons and show LOSS to the player
+//show restart button???
